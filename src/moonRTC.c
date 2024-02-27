@@ -36,7 +36,7 @@
 // predefined values to set the real-time clock: seconds minutes hours day date
 // month year control
 // 14:05:30 on Wednesday (3) 24 November 2021
-static const uint8_t DS1307_const[DSREGS] = {0x30, 0x05, 0x14, 4, 0x24, 0x11, 0x21, 0b00000000};
+//static const uint8_t DS1307_const[DSREGS] = {0x30, 0x05, 0x14, 4, 0x24, 0x11, 0x21, 0b00000000};
 
 // memory copy of the DS1307 registers
 uint8_t DS1307_regs [DSREGS];
@@ -47,7 +47,7 @@ void init(void) {
 
   lcd_init(LCD_DISP_ON);
   lcd_clrscr();
-  lcd_puts("Hello World!");
+  lcd_puts("Hello Worldee!");
 }
 
 int main(void) {
