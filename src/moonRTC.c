@@ -47,7 +47,7 @@ void init(void) {
 
   lcd_init(LCD_DISP_ON);
   lcd_clrscr();
-  lcd_puts("Hello Worldee!");
+  lcd_puts("Hello Worle!");
 }
 
 int main(void) {
