@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "i2cmaster.h": "c",
+        "delay.h": "c",
+        "lcd.h": "c"
+    }
+}
