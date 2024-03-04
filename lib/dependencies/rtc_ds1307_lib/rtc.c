@@ -88,15 +88,21 @@ void writeDataEEPROM(int address, uint32_t data) {
 uint32_t readDataEEPROM(uint8_t* address) {
 
   uint8_t byte3 = eeprom_read_byte(address);
+  while (!eeprom_is_ready()) {} // Wait until EEPROM is ready
   _delay_ms(10);
   uint8_t byte2 = eeprom_read_byte(address+1);
+  while (!eeprom_is_ready()) {} // Wait until EEPROM is ready
   _delay_ms(10);
   uint8_t byte1 = eeprom_read_byte(address+2);
+  while (!eeprom_is_ready()) {} // Wait until EEPROM is ready
   _delay_ms(10);
   uint8_t byte0 = eeprom_read_byte(address+3);
+  while (!eeprom_is_ready()) {} // Wait until EEPROM is ready
   _delay_ms(10);
 
-  return ((uint32_t)byte3 << 24) + ((uint32_t)byte2 << 16) + ((uint32_t)byte1 << 8) + ((uint32_t)byte0 << 0);
+  //return ((uint32_t)byte3 << 24) | ((uint32_t)byte2 << 16) | ((uint32_t)byte1 << 8) | (uint32_t)byte0;
+  //return ((uint32_t)byte3 << 24) + ((uint32_t)byte2 << 16) + ((uint32_t)byte1 << 8) + ((uint32_t)byte0 << 0);
+  return (((uint32_t)byte3 << 0) & 0xFF) + (((uint32_t)byte2 << 8) & 0xFFFF) + (((uint32_t)byte1 << 16) & 0xFFFFFF) + (((uint32_t)byte0 << 24) & 0xFFFFFFFF);
 }
 
 //return ((byte3 << 0) & 0xFF) + ((byte2 << 8) & 0xFFFF) + ((byte1 << 16) & 0xFFFFFF) + ((byte0 << 24) & 0xFFFFFFFF);
