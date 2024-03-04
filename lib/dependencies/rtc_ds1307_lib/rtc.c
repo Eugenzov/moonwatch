@@ -60,8 +60,46 @@ unsigned long int dateTimeToSeconds(int year, int month, int day,
   return totalSeconds; 
 }
 
+void writeDataEEPROM(int address, uint32_t data) {
+  uint8_t byte3 = data & 0xFF;
+  uint8_t byte2 = (data >> 8) & 0xFF;
+  uint8_t byte1 = (data >> 16) & 0xFF;
+  uint8_t byte0 = (data >> 24) & 0xFF;
 
+  eeprom_write_byte((uint8_t*)address, byte3);
+  while (!eeprom_is_ready()) {} // Wait until EEPROM is ready
+  _delay_ms(10);
 
+  eeprom_write_byte((uint8_t*)address+1, byte2);
+  while (!eeprom_is_ready()) {} // Wait until EEPROM is ready
+  _delay_ms(10);
+
+  eeprom_write_byte((uint8_t*)address+2, byte1);
+  while (!eeprom_is_ready()) {} // Wait until EEPROM is ready
+  _delay_ms(10);
+
+  eeprom_write_byte((uint8_t*)address+3, byte0);
+  _delay_ms(10);
+
+  //return (((uint32_t)byte3 << 24) ) + (((uint32_t)byte2 << 16)) + (((uint32_t)byte1 << 8) ) + (((uint32_t)byte0 << 0));
+  //return (((uint32_t)byte3 << 0) & 0xFF) + (((uint32_t)byte2 << 8) & 0xFFFF) + (((uint32_t)byte1 << 16) & 0xFFFFFF) + (((uint32_t)byte0 << 24) & 0xFFFFFFFF);
+}
+
+uint32_t readDataEEPROM(uint8_t* address) {
+
+  uint8_t byte3 = eeprom_read_byte(address);
+  _delay_ms(10);
+  uint8_t byte2 = eeprom_read_byte(address+1);
+  _delay_ms(10);
+  uint8_t byte1 = eeprom_read_byte(address+2);
+  _delay_ms(10);
+  uint8_t byte0 = eeprom_read_byte(address+3);
+  _delay_ms(10);
+
+  return ((uint32_t)byte3 << 24) + ((uint32_t)byte2 << 16) + ((uint32_t)byte1 << 8) + ((uint32_t)byte0 << 0);
+}
+
+//return ((byte3 << 0) & 0xFF) + ((byte2 << 8) & 0xFFFF) + ((byte1 << 16) & 0xFFFFFF) + ((byte0 << 24) & 0xFFFFFFFF);
 
 
 /*
@@ -83,7 +121,7 @@ void getLocalTime(void) {
   
 */
 
-/**
+/** 
  * BcdToBinary()
  * Brief	: Converts the passed Binary-Coded Decimal (BCD) value to binary
  * Param	: @bcd - binary-coded decimal value to be converted into binary

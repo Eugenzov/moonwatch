@@ -40,6 +40,7 @@ void init()
 int main(void)
 {
   uint8_t year, month, day, dow, hour, min, sec;
+  //uint32_t totalSecondsPassed = 0;
   char buffer[20];
   init();
 
@@ -60,13 +61,23 @@ int main(void)
     lcd_gotoxy(0,0);
     lcd_puts(buffer);
     _delay_ms(200);
-
+    int eeprombool = eeprom_is_ready();
     uint32_t totalSecondsPassed = dateTimeToSeconds(year,month, day, hour, min, sec);
-    //sprintf(buffer, "%02d/%02d/%04d", day, month, year+2000);
-    sprintf(buffer, "%lu", totalSecondsPassed);
     lcd_gotoxy(0,1);
+    //sprintf(buffer, "%02d/%02d/%04d", day, month, year+2000);
+    //uint32_t test = writeDataEEPROM(50, totalSecondsPassed);
+
+    //sprintf(buffer, "%lu %d", test, eeprombool);
+    sprintf(buffer, "%lu, %d", totalSecondsPassed, eeprombool);
+
+
+    //uint32_t readEEPROMvalue = readDataEEPROM(50);
+    //sprintf(buffer, "%lu %d", readEEPROMvalue, eeprombool);
+
     lcd_puts(buffer);
     _delay_ms(100);
+    writeDataEEPROM(50, totalSecondsPassed);
+   
   }
   
   return 0;

@@ -10,12 +10,19 @@
 #define RTC_DS1307_H
 
 #include <avr/io.h>
+#include <avr/eeprom.h>
 #include <stdio.h>
 #include <util/atomic.h>
 #include <time.h>
 #include <stdint.h>
 
 #include "i2c_lib/i2cmaster.h"
+
+// Addresses for storing uint32_t value
+#define ADDRESS_0 0
+#define ADDRESS_1 1
+#define ADDRESS_2 2
+#define ADDRESS_3 3
 
 /* Unsigned 8-bit BCD operations. */
 // in BCD each half of an 8-bit unsigned integer represents one digit from 0-9
@@ -73,7 +80,9 @@ unsigned long int dateTimeToSeconds(int year, int month, int day,
 void getLocalTime(void);
 
 
+void writeDataEEPROM(int address, uint32_t data);
 
+uint32_t readDataEEPROM(uint8_t* address);
 
 
 //static uint8_t BcdToBinary(uint8_t bcd);
