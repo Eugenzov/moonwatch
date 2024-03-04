@@ -1,23 +1,13 @@
-/*******************************************************************************
- * File		: rtc_ds1307.c
- * Brief	: Implementation of APIs for the DS1307 RTC module
- * Author	: Kyungjae Lee
- * Date		: Jun 25, 2023
- *
- * Note		: This code includes only the features that are necessary for my
- * 			  personal projects.
- ******************************************************************************/
-
 #include <avr/io.h>
 #include <stdio.h>
 #include <string.h> 	/* memset() */
 #include <stdint.h>
+#include <util/delay.h>
 
 #include <rtc_ds1307_lib/rtc.h>
 
 // read the eight registers from the DS1307 into the memory
-void DS1307read(void)
-{
+void DS1307read(void){ 
   uint8_t i;
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
   {
@@ -39,8 +29,7 @@ void DS1307read(void)
 }
 
 // write the contents of the memory into the eight hardware registers of the DS1307
-void DS1307write(void)
-{
+void DS1307write(void) {
   uint8_t i;
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
   {
@@ -54,6 +43,45 @@ void DS1307write(void)
   }
 }
 
+unsigned long int dateTimeToSeconds(int year, int month, int day,
+                                    int hour, int min, int seconds) {
+  const int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+  unsigned long int totalSeconds = 0;
+  int fullYear = year + 2000;
+
+  for (int yy = 1970; yy < fullYear; yy++) {
+    totalSeconds += 365UL * 24UL * 3600UL;
+  }
+  for (int mm = 1; mm < month; mm++) {
+    totalSeconds += daysInMonth[mm-1] * 24UL * 3600UL;
+  }
+  totalSeconds += (day-1) * 24UL * 3600UL;
+  totalSeconds += (hour*3600UL) + (min*60UL) + seconds;
+  return totalSeconds; 
+}
+
+
+
+
+
+/*
+void getLocalTime(void) {
+  time_t currentTime = time(NULL);
+
+  // Create DS1307 array variable
+    uint8_t DS1307_Current_time[DSREGS] = {
+        tm->tm_sec,         // seconds
+        tm->tm_min,         // minutes
+        tm->tm_hour,        // hours
+        tm->tm_wday,        // day of the week (0-6, Sunday = 0)
+        tm->tm_mday,        // day of the month
+        tm->tm_mon + 1,     // month (0-11, January = 0)
+        tm->tm_year - 100,  // year (subtract 100 to get last two digits)
+        0b00000000         // control byte
+    };
+}
+  
+*/
 
 /**
  * BcdToBinary()
@@ -61,7 +89,7 @@ void DS1307write(void)
  * Param	: @bcd - binary-coded decimal value to be converted into binary
  * Retval	: @bcd in binary representation
  * Note		: N/A
- */
+
 static uint8_t BcdToBinary(uint8_t bcd)
 {
 	uint8_t tens, ones;
@@ -70,7 +98,7 @@ static uint8_t BcdToBinary(uint8_t bcd)
 	ones = bcd & (uint8_t)0xF;
 
 	return tens + ones;
-} /* End of BcdToBinary */
+}  End of BcdToBinary */
 
 /**
  * BinaryToBcd()
@@ -78,7 +106,7 @@ static uint8_t BcdToBinary(uint8_t bcd)
  * Param	: @binary - binary value to be converted into binary-coded decimal
  * Retval	: @binary in binary-coded decimal representation
  * Note		: N/A
- */
+
 uint8_t BinaryToBcd(uint8_t binary)
 {
 	uint8_t tens, ones;
@@ -94,4 +122,4 @@ uint8_t BinaryToBcd(uint8_t binary)
 	}
 
 	return bcd;
-} /* End of BinaryToBcd */
+}  End of BinaryToBcd */
